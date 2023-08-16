@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_users_ar/providers/cart_provider.dart';
 import 'package:shopsmart_users_ar/providers/product_provider.dart';
 import 'package:shopsmart_users_ar/providers/theme_provider.dart';
 import 'package:shopsmart_users_ar/screens/inner_screens/viewed_recently.dart';
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => ProductsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CartProvider(),
         ),
       ],
       child: Consumer<ThemeProvider>(builder: (
