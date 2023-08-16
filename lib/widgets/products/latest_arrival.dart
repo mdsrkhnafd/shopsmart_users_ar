@@ -1,8 +1,11 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users_ar/widgets/subtitle_text.dart';
 
 import '../../consts/app_constant.dart';
+import '../../models/product_model.dart';
+import '../../providers/cart_provider.dart';
 import '../../screens/inner_screens/product_details.dart';
 import 'heart_btn.dart';
 
@@ -12,11 +15,13 @@ class LatestArrivalProductsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final productModel = Provider.of<ProductModel>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () async {
-          await Navigator.pushNamed(context, ProductDetails.routName);
+          await Navigator.pushNamed(context, ProductDetails.routName , arguments: productModel.productId);
         },
         child: SizedBox(
           width: size.width * 0.45,
@@ -27,7 +32,7 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: FancyShimmerImage(
-                    imageUrl: AppConstants.imageUrl,
+                    imageUrl: productModel.productImage,
                     width: size.width * 0.28,
                     height: size.width * 0.28,
                   ),
@@ -41,7 +46,7 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Title " * 10,
+                      productModel.productTitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -50,18 +55,24 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                         children: [
                           const HeartButtonWidget(),
                           IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.add_shopping_cart_rounded,
+                            onPressed: () {
+                              if(cartProvider.isProdinCart(productId: productModel.productId)) {
+                                return;
+                              }
+                              cartProvider.addProductToCart(
+                                  productId: productModel.productId);
+                            },
+                            icon:  Icon(
+                              cartProvider.isProdinCart(productId: productModel.productId) ? Icons.check : Icons.add_shopping_cart_outlined,
                               size: 18,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const FittedBox(
+                     FittedBox(
                       child: SubtitleTextWidget(
-                        label: "166.5\$",
+                        label: "${productModel.productPrice}\$",
                         color: Colors.blue,
                       ),
                     ),

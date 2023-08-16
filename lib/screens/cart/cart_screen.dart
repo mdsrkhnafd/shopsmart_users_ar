@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/main.dart';
 import 'package:shopsmart_users_ar/providers/cart_provider.dart';
 import 'package:shopsmart_users_ar/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users_ar/services/assets_manager.dart';
+import 'package:shopsmart_users_ar/services/my_app_method.dart';
 import 'package:shopsmart_users_ar/widgets/empty_bag.dart';
 import 'package:shopsmart_users_ar/widgets/title_text.dart';
 
@@ -37,7 +39,13 @@ class CartScreen extends StatelessWidget {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    MyAppMethods.showErrorORWarningDialog(
+                        isError: false,
+                        context: context, subtitle: "Clear cart?", fct: () {
+                          cartProvider.cartLocalClear();
+                    });
+                  },
                   icon: const Icon(
                     Icons.delete_forever_rounded,
                     color: Colors.red,
@@ -45,11 +53,21 @@ class CartScreen extends StatelessWidget {
                 ),
               ],
             ),
-            body: ListView.builder(
-              itemCount: 15,
-              itemBuilder: (context, index) {
-                return const CartWidget();
-              },
+            body: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cartProvider.getCartItems.length,
+                    itemBuilder: (context, index) {
+                      return  ChangeNotifierProvider.value(
+                          value: cartProvider.getCartItems.values.toList()[index],
+                          child: const CartWidget(),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: kBottomNavigationBarHeight+10,)
+              ],
             ),
           );
   }
