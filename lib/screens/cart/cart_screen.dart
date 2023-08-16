@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopsmart_users_ar/providers/cart_provider.dart';
 import 'package:shopsmart_users_ar/screens/cart/bottom_checkout.dart';
 import 'package:shopsmart_users_ar/services/assets_manager.dart';
 import 'package:shopsmart_users_ar/widgets/empty_bag.dart';
 import 'package:shopsmart_users_ar/widgets/title_text.dart';
 
+import '../../providers/product_provider.dart';
 import 'cart_widget.dart';
 
 class CartScreen extends StatelessWidget {
@@ -13,7 +16,9 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+   // final productProvider = Provider.of<ProductsProvider>(context);
+    final cartProvider = Provider.of<CartProvider>(context);
+    return cartProvider.getCartItems.isEmpty
         ? Scaffold(
             body: EmptyBagWidget(
                 imagePath: AssetsManager.shoppingBasket,
@@ -25,7 +30,7 @@ class CartScreen extends StatelessWidget {
         : Scaffold(
             bottomSheet: const CartBottomCheckout(),
             appBar: AppBar(
-              title: const TitlesTextWidget(label: "Cart (5)"),
+              title: TitlesTextWidget(label: "Cart (${cartProvider.getCartItems.length})"),
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(AssetsManager.shoppingCart),
