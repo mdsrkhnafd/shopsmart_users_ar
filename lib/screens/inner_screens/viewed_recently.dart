@@ -1,9 +1,12 @@
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopsmart_users_ar/services/assets_manager.dart';
 import 'package:shopsmart_users_ar/widgets/empty_bag.dart';
 import 'package:shopsmart_users_ar/widgets/title_text.dart';
 
+import '../../providers/viewed_recently_provider.dart';
+import '../../services/my_app_method.dart';
 import '../../widgets/products/product_widget.dart';
 
 class ViewedRecentlyScreen extends StatelessWidget {
@@ -12,7 +15,8 @@ class ViewedRecentlyScreen extends StatelessWidget {
   final bool isEmpty = false;
   @override
   Widget build(BuildContext context) {
-    return isEmpty
+    final viewedProdProvider = Provider.of<ViewedRecentlyProvider>(context);
+    return viewedProdProvider.getViewedProd.isEmpty
         ? Scaffold(
       body: EmptyBagWidget(
         imagePath: AssetsManager.shoppingBasket,
@@ -24,14 +28,20 @@ class ViewedRecentlyScreen extends StatelessWidget {
     )
         : Scaffold(
       appBar: AppBar(
-        title: const TitlesTextWidget(label: "Viewed recently (5)"),
+        title: TitlesTextWidget(label: "Viewed recently (${viewedProdProvider.getViewedProd.length})"),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(AssetsManager.shoppingCart),
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              MyAppMethods.showErrorORWarningDialog(
+                  isError: false,
+                  context: context, subtitle: "Clear viewed?", fct: () {
+                viewedProdProvider.viewedProdLocalClear();
+              });
+            },
             icon: const Icon(
               Icons.delete_forever_rounded,
               color: Colors.red,
@@ -40,9 +50,12 @@ class ViewedRecentlyScreen extends StatelessWidget {
         ],
       ),
       body: DynamicHeightGridView(
-        itemCount: 220,
+        itemCount: viewedProdProvider.getViewedProd.length,
         builder: ((context, index) {
-          return const ProductWidget(productId: "");
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ProductWidget(productId: viewedProdProvider.getViewedProd.values.toList()[index].productId),
+          );
         }),
         crossAxisCount: 2,
       ),
