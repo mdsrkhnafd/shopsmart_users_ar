@@ -25,7 +25,7 @@ class LatestArrivalProductsWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: () async {
           viewedProdProvider.addViewedProd(productId: productModel.productId);
-          await Navigator.pushNamed(context, ProductDetails.routName , arguments: productModel.productId);
+          await Navigator.pushNamed(context, ProductDetailsScreen.routName , arguments: productModel.productId);
         },
         child: SizedBox(
           width: size.width * 0.45,

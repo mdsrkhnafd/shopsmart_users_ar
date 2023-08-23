@@ -8,6 +8,7 @@ import 'package:shopsmart_users_ar/screens/profile_screen.dart';
 import 'package:shopsmart_users_ar/screens/search_screen.dart';
 
 class RootScreen extends StatefulWidget {
+  static const routeName = '/RootScreen';
   const RootScreen({super.key});
 
   @override

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
@@ -13,8 +14,16 @@ import '../providers/theme_provider.dart';
 import '../services/assets_manager.dart';
 import '../services/my_app_method.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -159,22 +168,27 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  icon: const Icon(Icons.login),
-                  label: const Text(
-                    "Login",
+                  icon:  Icon(user == null ? Icons.login : Icons.logout),
+                  label:  Text(
+                    user == null ? "Login" : "Logout",
                   ),
                   onPressed: () async {
-                    await Navigator.pushNamed(
-                      context,
-                      LoginScreen.routName,
-                    );
-                    // await MyAppMethods.showErrorORWarningDialog(
-                    //     context: context,
-                    //     subtitle: "Are you sure?",
-                    //     fct: () async {
+                    if(user == null) {
+                      await Navigator.pushNamed(
+                        context,
+                        LoginScreen.routName,
+                      );
+                    }
+                    else {
 
-                    //     },
-                    //     isError: false);
+                      await MyAppMethods.showErrorORWarningDialog(
+                          context: context,
+                          subtitle: "Are you sure you want to signout",
+                          fct: () async {
+
+                          },
+                          isError: false);
+                    }
                   },
                 ),
               ),
