@@ -185,7 +185,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context: context,
                           subtitle: "Are you sure you want to signout",
                           fct: () async {
-
+                            await FirebaseAuth.instance.signOut();
+                            if(!mounted) return ;
+                            Navigator.pushReplacementNamed(context, LoginScreen.routName);
                           },
                           isError: false);
                     }
