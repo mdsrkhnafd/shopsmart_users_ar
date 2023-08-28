@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,6 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? _pickedImage;
   bool isLoading = false;
   final auth = FirebaseAuth.instance;
+  String? userImageUrl;
 
   @override
   void initState() {
@@ -69,15 +73,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _registerFct() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-
+    if (_pickedImage == null) {
+      MyAppMethods.showErrorORWarningDialog(
+          context: context,
+          subtitle: "Make sure to pick up an image",
+          fct: () {});
+      return;
+    }
     if (isValid) {
-      // _formKey.currentState!.save();
-      // if (_pickedImage == null) {
-      //   MyAppMethods.showErrorORWarningDialog(
-      //       context: context,
-      //       subtitle: "Make sure to pick up an image",
-      //       fct: () {});
-      // }
+       _formKey.currentState!.save();
 
       try {
         setState(() {
@@ -85,30 +89,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
 
         await auth.createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text.trim(),);
-        Fluttertoast.showToast(
-            msg: "An account has been created",
-            textColor: Colors.white,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
         );
+        Fluttertoast.showToast(
+          msg: "An account has been created",
+          textColor: Colors.white,
+        );
+
         final User? user = auth.currentUser;
         final String uid = user!.uid;
-        await FirebaseFirestore.instance.collection("users").doc(uid).set({
-          "userId" : uid,
-          "userName" : _nameController.text,
-          "userImage" : "",
-          "userEmail" : _emailController.text.toLowerCase(),
-          "createAt" : Timestamp.now(),
-          "userWish" : [],
-          "userCart" : [],
-        });
-        if(!mounted) return;
-        Navigator.pushReplacementNamed(context, RootScreen.routeName);
 
+        final ref = FirebaseStorage.instance
+            .ref("usersImages")
+            .child("${_emailController.text.trim()}.jpg");
+        await ref.putFile(File(_pickedImage!.path));
+        userImageUrl = await ref.getDownloadURL();
+
+        await FirebaseFirestore.instance.collection("users").doc(uid).set({
+          "userId": uid,
+          "userName": _nameController.text,
+          "userImage": userImageUrl,
+          "userEmail": _emailController.text.toLowerCase(),
+          "createAt": Timestamp.now(),
+          "userWish": [],
+          "userCart": [],
+        });
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, RootScreen.routeName);
       } on FirebaseException catch (error) {
         await MyAppMethods.showErrorORWarningDialog(
             context: context, subtitle: error.message.toString(), fct: () {});
-      }catch (error) {
+      } catch (error) {
         await MyAppMethods.showErrorORWarningDialog(
             context: context, subtitle: error.toString(), fct: () {});
       } finally {
@@ -208,7 +220,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return MyValidators.displayNamevalidator(value);
                           },
                           onFieldSubmitted: (value) {
-                            FocusScope.of(context).requestFocus(_emailFocusNode);
+                            FocusScope.of(context)
+                                .requestFocus(_emailFocusNode);
                           },
                         ),
                         const SizedBox(
@@ -297,7 +310,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             return MyValidators.repeatPasswordValidator(
-                                value: value, password: _passwordController.text);
+                                value: value,
+                                password: _passwordController.text);
                           },
                           onFieldSubmitted: (value) {
                             _registerFct();

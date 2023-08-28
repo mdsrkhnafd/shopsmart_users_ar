@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -22,6 +23,17 @@ class GoogleButton extends StatelessWidget {
               idToken: googleAuth.idToken,
             ),
           );
+          if(authResult.additionalUserInfo!.isNewUser) {
+            await FirebaseFirestore.instance.collection("users").doc(authResult.user!.uid).set({
+              "userId" : authResult.user!.uid,
+              "userName" : authResult.user!.displayName,
+              "userImage" : authResult.user!.photoURL,
+              "userEmail" : authResult.user!.email,
+              "createAt" : Timestamp.now(),
+              "userWish" : [],
+              "userCart" : [],
+            });
+          }
         }
       }
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
