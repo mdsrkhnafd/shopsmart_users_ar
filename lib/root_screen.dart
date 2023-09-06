@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:shopsmart_users_ar/models/product_model.dart';
 import 'package:shopsmart_users_ar/providers/cart_provider.dart';
+import 'package:shopsmart_users_ar/providers/product_provider.dart';
 import 'package:shopsmart_users_ar/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users_ar/screens/home_screen.dart';
 import 'package:shopsmart_users_ar/screens/profile_screen.dart';
@@ -9,6 +13,7 @@ import 'package:shopsmart_users_ar/screens/search_screen.dart';
 
 class RootScreen extends StatefulWidget {
   static const routeName = '/RootScreen';
+
   const RootScreen({super.key});
 
   @override
@@ -16,22 +21,43 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+  late List<Widget> screens;
   late PageController controller;
   int currentScreen = 0;
-
-  List<Widget> screens = [
-    const HomeScreen(),
-    const SearchScreen(),
-    const CartScreen(),
-    const ProfileScreen(),
-  ];
+  bool isLoadingProd = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    screens = [
+      const HomeScreen(),
+      const SearchScreen(),
+      const CartScreen(),
+      const ProfileScreen(),
+    ];
     controller = PageController(initialPage: currentScreen);
+  }
+
+  Future<void> fetchFCT() async {
+    final productProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
+
+    try {
+      Future.wait({
+        productProvider.fetchProducts(),
+      });
+    } catch (error) {
+      log(error.toString());
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (isLoadingProd) {
+      fetchFCT();
+    }
+    super.didChangeDependencies();
   }
 
   @override

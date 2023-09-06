@@ -23,5 +23,17 @@ class ProductModel with ChangeNotifier {
     this.createdAt,
   });
 
-
+  factory ProductModel.fromFirestore(DocumentSnapshot doc) {
+    Map data  = doc.data() as Map<String , dynamic>;
+    // data.containsKey("key")
+    return ProductModel(
+        productId:  data["productId"],  //doc.get(field),
+        productTitle: data["productTitle"],
+        productPrice: data["productPrice"],
+        productCategory: data["productCategory"],
+        productDescription: data["productDescription"],
+        productImage: data["productImage"],
+        productQuantity: data["productQuantity"],
+        createdAt: data["createdAt"],);
+  }
 }
