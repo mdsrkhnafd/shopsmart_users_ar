@@ -1,18 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopsmart_users_ar/providers/product_provider.dart';
-
 import '../models/product_model.dart';
+import '../providers/product_provider.dart';
 import '../services/assets_manager.dart';
 import '../widgets/products/product_widget.dart';
 import '../widgets/title_text.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 
 class SearchScreen extends StatefulWidget {
-  static const routeName = "/SearchScreen";
-
+  static const routeName = '/SearchScreen';
   const SearchScreen({super.key});
 
   @override
@@ -35,15 +31,14 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   List<ProductModel> productListSearch = [];
-
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductsProvider>(context);
+    final productsProvider = Provider.of<ProductsProvider>(context);
     String? passedCategory =
-        ModalRoute.of(context)!.settings.arguments as String?;
+    ModalRoute.of(context)!.settings.arguments as String?;
     List<ProductModel> productList = passedCategory == null
-        ? productProvider.products
-        : productProvider.findByCategory(categoryName: passedCategory);
+        ? productsProvider.products
+        : productsProvider.findByCategory(categoryName: passedCategory);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -60,7 +55,26 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         body: productList.isEmpty
             ? const Center(child: TitlesTextWidget(label: "No product found"))
-            : Padding(
+            : StreamBuilder<List<ProductModel>>(
+            stream: productsProvider.fetchProductsStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  home: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: SelectableText(snapshot.error.toString()),
+                );
+              } else if (snapshot.data == null) {
+                return const Center(
+                  child: SelectableText("No products has been added"),
+                );
+              }
+              return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
@@ -85,16 +99,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          productListSearch = productProvider.searchQuery(
-                              searchText: searchTextController.text , passedList: productList);
-                        });
-                      },
+                      // onChanged: (value) {
+                      //   setState(() {
+                      //     productListSearch = productsProvider.searchQuery(
+                      //         searchText: searchTextController.text);
+                      //   });
+                      // },
                       onSubmitted: (value) {
                         setState(() {
-                          productListSearch = productProvider.searchQuery(
-                              searchText: searchTextController.text , passedList: productList);
+                          productListSearch = productsProvider.searchQuery(
+                              searchText: searchTextController.text,
+                              passedList: productList);
                         });
                       },
                     ),
@@ -105,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         productListSearch.isEmpty) ...[
                       const Center(
                         child: TitlesTextWidget(label: "No products found"),
-                      )
+                      ),
                     ],
                     Expanded(
                       child: DynamicHeightGridView(
@@ -117,15 +132,17 @@ class _SearchScreenState extends State<SearchScreen> {
                         crossAxisSpacing: 12,
                         builder: (context, index) {
                           return ProductWidget(
-                              productId: searchTextController.text.isNotEmpty
-                                  ? productListSearch[index].productId
-                                  : productList[index].productId);
+                            productId: searchTextController.text.isNotEmpty
+                                ? productListSearch[index].productId
+                                : productList[index].productId,
+                          );
                         },
                       ),
                     ),
                   ],
                 ),
-              ),
+              );
+            }),
       ),
     );
   }
