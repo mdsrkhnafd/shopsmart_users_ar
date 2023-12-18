@@ -2,10 +2,10 @@ import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users_ar/screens/inner_screens/product_details.dart';
-import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
 import '../../providers/viewed_recently_provider.dart';
+import '../../services/my_app_method.dart';
 import '../subtitle_text.dart';
 import '../title_text.dart';
 import 'heart_btn.dart';
@@ -37,8 +37,10 @@ class _ProductWidgetState extends State<ProductWidget> {
             padding: const EdgeInsets.all(0.0),
             child: GestureDetector(
               onTap: () async {
-                viewedProdProvider.addViewedProd(productId: getCurrProduct.productId);
-                await Navigator.pushNamed(context, ProductDetailsScreen.routName,
+                viewedProdProvider.addViewedProd(
+                    productId: getCurrProduct.productId);
+                await Navigator.pushNamed(
+                    context, ProductDetailsScreen.routName,
                     arguments: getCurrProduct.productId);
               },
               child: Column(
@@ -68,7 +70,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                         ),
                         Flexible(
                           flex: 2,
-                          child: HeartButtonWidget(productId: getCurrProduct.productId,),
+                          child: HeartButtonWidget(
+                            productId: getCurrProduct.productId,
+                          ),
                         ),
                       ],
                     ),
@@ -95,18 +99,37 @@ class _ProductWidgetState extends State<ProductWidget> {
                             color: Colors.lightBlue,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12.0),
-                              onTap: () {
+                              onTap: () async {
                                 if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
                                   return;
                                 }
-                                cartProvider.addProductToCart(
-                                    productId: getCurrProduct.productId);
+                                try {
+                                  cartProvider.addToCartFirebase(
+                                    productId: getCurrProduct.productId,
+                                    qty: 1,
+                                    context: context,
+                                  );
+                                } catch (e) {
+                                  await MyAppMethods.showErrorORWarningDialog(
+                                      context: context,
+                                      subtitle: e.toString(),
+                                      fct: () {});
+                                }
+
+                                // if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
+                                //   return;
+                                // }
+                                // cartProvider.addProductToCart(
+                                //     productId: getCurrProduct.productId);
                               },
                               splashColor: Colors.red,
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Icon(
-                                  cartProvider.isProdinCart(productId: getCurrProduct.productId) ? Icons.check : Icons.add_shopping_cart_outlined,
+                                  cartProvider.isProdinCart(
+                                          productId: getCurrProduct.productId)
+                                      ? Icons.check
+                                      : Icons.add_shopping_cart_outlined,
                                   size: 20,
                                   color: Colors.white,
                                 ),

@@ -18,7 +18,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   // final productProvider = Provider.of<ProductsProvider>(context);
+    // final productProvider = Provider.of<ProductsProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
     return cartProvider.getCartItems.isEmpty
         ? Scaffold(
@@ -32,7 +32,8 @@ class CartScreen extends StatelessWidget {
         : Scaffold(
             bottomSheet: const CartBottomCheckout(),
             appBar: AppBar(
-              title: TitlesTextWidget(label: "Cart (${cartProvider.getCartItems.length})"),
+              title: TitlesTextWidget(
+                  label: "Cart (${cartProvider.getCartItems.length})"),
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(AssetsManager.shoppingCart),
@@ -42,9 +43,12 @@ class CartScreen extends StatelessWidget {
                   onPressed: () {
                     MyAppMethods.showErrorORWarningDialog(
                         isError: false,
-                        context: context, subtitle: "Clear cart?", fct: () {
-                          cartProvider.cartLocalClear();
-                    });
+                        context: context,
+                        subtitle: "Clear cart?",
+                        fct: () async {
+                          await cartProvider.clearCartFromFirebase();
+                         // cartProvider.cartLocalClear();
+                        });
                   },
                   icon: const Icon(
                     Icons.delete_forever_rounded,
@@ -59,14 +63,16 @@ class CartScreen extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: cartProvider.getCartItems.length,
                     itemBuilder: (context, index) {
-                      return  ChangeNotifierProvider.value(
-                          value: cartProvider.getCartItems.values.toList()[index],
-                          child: const CartWidget(),
+                      return ChangeNotifierProvider.value(
+                        value: cartProvider.getCartItems.values.toList()[index],
+                        child: const CartWidget(),
                       );
                     },
                   ),
                 ),
-                const SizedBox(height: kBottomNavigationBarHeight+10,)
+                const SizedBox(
+                  height: kBottomNavigationBarHeight + 10,
+                )
               ],
             ),
           );

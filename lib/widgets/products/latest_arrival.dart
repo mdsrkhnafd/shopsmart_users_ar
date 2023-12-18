@@ -9,6 +9,7 @@ import '../../models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/wishlist_provider.dart';
 import '../../screens/inner_screens/product_details.dart';
+import '../../services/my_app_method.dart';
 import 'heart_btn.dart';
 
 class LatestArrivalProductsWidget extends StatelessWidget {
@@ -59,12 +60,22 @@ class LatestArrivalProductsWidget extends StatelessWidget {
                         children: [
                           HeartButtonWidget(productId: productModel.productId,),
                           IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if(cartProvider.isProdinCart(productId: productModel.productId)) {
                                 return;
                               }
-                              cartProvider.addProductToCart(
-                                  productId: productModel.productId);
+                              try {
+                                cartProvider.addToCartFirebase(
+                                  productId: productModel.productId,
+                                  qty: 1,
+                                  context: context,
+                                );
+                              } catch (e) {
+                                await MyAppMethods.showErrorORWarningDialog(
+                                    context: context,
+                                    subtitle: e.toString(),
+                                    fct: () {});
+                              }
                             },
                             icon:  Icon(
                               cartProvider.isProdinCart(productId: productModel.productId) ? Icons.check : Icons.add_shopping_cart_outlined,

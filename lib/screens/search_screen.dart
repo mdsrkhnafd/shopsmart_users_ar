@@ -33,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<ProductModel> productListSearch = [];
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context);
+    final productsProvider = Provider.of<ProductsProvider>(context , listen: false);
     String? passedCategory =
     ModalRoute.of(context)!.settings.arguments as String?;
     List<ProductModel> productList = passedCategory == null
@@ -59,12 +59,9 @@ class _SearchScreenState extends State<SearchScreen> {
             stream: productsProvider.fetchProductsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  home: Center(
+                return const Center(
                     child: CircularProgressIndicator(),
-                  ),
-                );
+                  );
               } else if (snapshot.hasError) {
                 return Center(
                   child: SelectableText(snapshot.error.toString()),
