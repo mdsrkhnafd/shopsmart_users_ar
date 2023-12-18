@@ -72,7 +72,8 @@ class MyApp extends StatelessWidget {
             ),
             ChangeNotifierProvider(
               create: (_) => ViewedRecentlyProvider(),
-            ),ChangeNotifierProvider(
+            ),
+            ChangeNotifierProvider(
               create: (_) => UserProvider(),
             ),
           ],

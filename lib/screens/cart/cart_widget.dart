@@ -24,92 +24,102 @@ class CartWidget extends StatelessWidget {
     return getCurrProduct == null
         ? const SizedBox.shrink()
         : FittedBox(
-      child: IntrinsicWidth(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: FancyShimmerImage(
-                    height: size.height * 0.2,
-                    width: size.height * 0.2,
-                    imageUrl: getCurrProduct.productImage),
-              ),
-              const SizedBox(
-                width: 10.0,
-              ),
-              IntrinsicWidth(
-                child: Column(
+            child: IntrinsicWidth(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: size.width * 0.6,
-                          child: TitlesTextWidget(
-                            label: getCurrProduct.productTitle,
-                            maxLines: 2,
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                cartProvider.removeOneItem(productId: getCurrProduct.productId);
-                              },
-                              icon: const Icon(
-                                Icons.clear,
-                                color: Colors.red,
-                              ),
-                            ),
-                            HeartButtonWidget(productId: getCurrProduct.productId,),
-                          ],
-                        )
-                      ],
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: FancyShimmerImage(
+                          height: size.height * 0.2,
+                          width: size.height * 0.2,
+                          imageUrl: getCurrProduct.productImage),
                     ),
-                    Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TitlesTextWidget(
-                          label: "${getCurrProduct.productPrice}\$",
-                          fontSize: 20,
-                          color: Colors.blue,
-                        ),
-                        const Spacer(),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    IntrinsicWidth(
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: size.width * 0.6,
+                                child: TitlesTextWidget(
+                                  label: getCurrProduct.productTitle,
+                                  maxLines: 2,
+                                ),
                               ),
-                              side: const BorderSide(
-                                  width: 2, color: Colors.blue)),
-                          onPressed: () async {
-                            showModalBottomSheet(
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(16.0),
-                                    topRight: Radius.circular(16.0)),
+                              Column(
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      await cartProvider
+                                          .removeCartItemFromFirestore(
+                                        cartId: cartModel.cartId,
+                                        productId: getCurrProduct.productId,
+                                        qty: cartModel.quantity,
+                                      );
+                                      // cartProvider.removeOneItem(productId: getCurrProduct.productId);
+                                    },
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  HeartButtonWidget(
+                                    productId: getCurrProduct.productId,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TitlesTextWidget(
+                                label: "${getCurrProduct.productPrice}\$",
+                                fontSize: 20,
+                                color: Colors.blue,
                               ),
-                              context: context,
-                              builder: (context) {
-                                return  QuantityBottomSheetWidget(cartModel: cartModel,);
-                              },
-                            );
-                          },
-                          icon: const Icon(IconlyLight.arrowDown2),
-                          label: Text("Qty: ${cartModel.quantity} "),
-                        )
-                      ],
+                              const Spacer(),
+                              OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    side: const BorderSide(
+                                        width: 2, color: Colors.blue)),
+                                onPressed: () async {
+                                  showModalBottomSheet(
+                                    backgroundColor: Theme.of(context)
+                                        .scaffoldBackgroundColor,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0)),
+                                    ),
+                                    context: context,
+                                    builder: (context) {
+                                      return QuantityBottomSheetWidget(
+                                        cartModel: cartModel,
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: const Icon(IconlyLight.arrowDown2),
+                                label: Text("Qty: ${cartModel.quantity} "),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+              ),
+            ),
+          );
   }
 }

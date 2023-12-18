@@ -21,7 +21,7 @@ class CartBottomCheckout extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: kBottomNavigationBarHeight + 15,
+        height: kBottomNavigationBarHeight + 20,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           child: Row(

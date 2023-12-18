@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../consts/app_constant.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
+import '../../services/my_app_method.dart';
 import '../../widgets/app_name_text.dart';
 import '../../widgets/products/heart_btn.dart';
 import '../../widgets/subtitle_text.dart';
@@ -109,14 +110,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         ),
                                       ),
                                     ),
-                                    onPressed: () {
-                                      if (cartProvider.isProdinCart(
-                                          productId:
-                                              getCurrProduct.productId)) {
+                                    onPressed: () async {
+                                      if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
                                         return;
                                       }
-                                      cartProvider.addProductToCart(
-                                          productId: getCurrProduct.productId);
+                                      try {
+                                        cartProvider.addToCartFirebase(
+                                          productId: getCurrProduct.productId,
+                                          qty: 1,
+                                          context: context,
+                                        );
+                                      } catch (e) {
+                                        await MyAppMethods.showErrorORWarningDialog(
+                                            context: context,
+                                            subtitle: e.toString(),
+                                            fct: () {});
+                                      }
                                     },
                                     icon: Icon(
                                       cartProvider.isProdinCart(

@@ -1,7 +1,6 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopsmart_users_ar/models/product_model.dart';
 import 'package:shopsmart_users_ar/widgets/products/ctg_rounded_widget.dart';
 import 'package:shopsmart_users_ar/widgets/products/latest_arrival.dart';
 import 'package:shopsmart_users_ar/widgets/title_text.dart';

@@ -34,9 +34,23 @@ class _HeartButtonWidgetState extends State<HeartButtonWidget> {
         style: IconButton.styleFrom(
           shape: const CircleBorder(),
         ),
-        onPressed: () {
-          wishlistsProvider.addOrRemoveFromWishlist(
-              productId: widget.productId);
+        onPressed: () async {
+          // wishlistsProvider.addOrRemoveFromWishlist(
+          //     productId: widget.productId);
+
+          if (wishlistsProvider.getWishlist.containsKey(widget.productId)) {
+           await wishlistsProvider.removeWishlistItemFromFirestore(
+              wishlistId:
+                  wishlistsProvider.getWishlist[widget.productId]!.wishlistId,
+              productId: widget.productId,
+            );
+          } else {
+           await wishlistsProvider.addToWishlistFirebase(
+              productId: widget.productId,
+              context: context,
+            );
+           await wishlistsProvider.fetchWishlist();
+          }
         },
         icon: Icon(
           wishlistsProvider.isProdinWishlist(
