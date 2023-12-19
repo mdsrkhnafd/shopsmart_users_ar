@@ -1,4 +1,5 @@
 class AssetsManager {
+  static String assetsPath = "assets";
   static String imagesPath = "assets/images";
   static String profileImagesPath = "assets/images/profile";
   static String bagImagesPath = "assets/images/bag";
@@ -40,4 +41,9 @@ class AssetsManager {
   static String cosmetics = "$categoriesImagesPath/cosmetics.png";
   static String shoes = "$categoriesImagesPath/shoes.png";
   static String pc = "$categoriesImagesPath/pc.png";
+  // Splash and Onboarding path
+  static String splash = "$assetsPath/splash.jpg";
+  static String onboarding_1 = "$assetsPath/onboarding_1.jpg";
+  static String onboarding_2 = "$assetsPath/onboarding_2.jpg";
+  static String onboarding_3 = "$assetsPath/onboarding_3.jpg";
 }
