@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopsmart_users_ar/widgets/subtitle_text.dart';
-import 'package:shopsmart_users_ar/widgets/title_text.dart';
+
 
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
+import '../../widgets/subtitle_text.dart';
+import '../../widgets/title_text.dart';
 
-class CartBottomCheckout extends StatelessWidget {
-  const CartBottomCheckout({super.key});
-
+class CartBottomSheetWidget extends StatelessWidget {
+  const CartBottomSheetWidget({super.key, required this.function});
+  final Function function;
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductsProvider>(context);
+    final productsProvider = Provider.of<ProductsProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
     return Container(
       decoration: BoxDecoration(
@@ -20,29 +21,33 @@ class CartBottomCheckout extends StatelessWidget {
           top: BorderSide(width: 1, color: Colors.grey),
         ),
       ),
-      child: SizedBox(
-        height: kBottomNavigationBarHeight + 20,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: kBottomNavigationBarHeight + 10,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-               Flexible(
+              Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FittedBox(
                         child: TitlesTextWidget(
-                            label: "Total (${cartProvider.getCartItems.length} products/${cartProvider.getQty()} Items)")),
+                            label:
+                            "Total (${cartProvider.getCartItems.length} products/${cartProvider.getQty()} items)")),
                     SubtitleTextWidget(
-                      label: "${cartProvider.getTotal(productsProvider: productProvider).toStringAsFixed(2)}\$",
+                      label:
+                      "${cartProvider.getTotal(productsProvider: productsProvider).toStringAsFixed(2)}\$",
                       color: Colors.blue,
                     ),
                   ],
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await function();
+                },
                 child: const Text("Checkout"),
               ),
             ],
