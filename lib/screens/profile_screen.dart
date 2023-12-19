@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users_ar/services/my_app_method.dart';
 import '../models/user_model.dart';
@@ -228,7 +229,9 @@ class _ProfileScreenState extends State<ProfileScreen>  with AutomaticKeepAliveC
                         context: context,
                         subtitle: "Are you sure you want to SignOut",
                         fct: () async {
+                          final GoogleSignIn _googleSignIn = GoogleSignIn();
                           await FirebaseAuth.instance.signOut();
+                          await _googleSignIn.signOut();
                           if (!mounted) return;
                           Navigator.pushReplacementNamed(
                               context, LoginScreen.routName);

@@ -5,6 +5,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_users_ar/providers/cart_provider.dart';
 import 'package:shopsmart_users_ar/providers/product_provider.dart';
+import 'package:shopsmart_users_ar/providers/user_provider.dart';
 import 'package:shopsmart_users_ar/providers/wishlist_provider.dart';
 import 'package:shopsmart_users_ar/screens/cart/cart_screen.dart';
 import 'package:shopsmart_users_ar/screens/home_screen.dart';
@@ -46,10 +47,12 @@ class _RootScreenState extends State<RootScreen> {
     Provider.of<CartProvider>(context, listen: false);
 
     final wishlistsProvider = Provider.of<WishlistProvider>(context , listen: false);
+    final userProvider = Provider.of<UserProvider>(context , listen: false);
 
     try {
       Future.wait({
         productProvider.fetchProducts(),
+        userProvider.fetchUserInfo(),
       });
       Future.wait({
         cartProvider.fetchCart(),
