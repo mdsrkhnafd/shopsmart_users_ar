@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shopsmart_users_ar/services/my_app_method.dart';
 import '../../consts/my_validators.dart';
+import '../../root_screen.dart';
 import '../../services/assets_manager.dart';
 import '../../widgets/app_name_text.dart';
 import '../../widgets/subtitle_text.dart';
@@ -8,6 +12,7 @@ import '../../widgets/title_text.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static const routeName = '/ForgotPasswordScreen';
+
   const ForgotPasswordScreen({super.key});
 
   @override
@@ -17,6 +22,8 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   late final TextEditingController _emailController;
   late final _formKey = GlobalKey<FormState>();
+  final auth = FirebaseAuth.instance;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -35,7 +42,53 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> _forgetPassFCT() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    if (isValid) {}
+
+    if (isValid) {
+      try {
+        setState(() {
+          isLoading = true;
+        });
+
+        await auth.sendPasswordResetEmail(
+            email: _emailController.text.trim().toString());
+
+        Fluttertoast.showToast(
+          msg:
+              "We have sent you an email to recover the password, please check your email",
+          textColor: Colors.white,
+        );
+
+        // if(!mounted) return;
+        // Navigator.pushReplacementNamed(context, RootScreen.routeName);
+      } on FirebaseException catch (error) {
+        if (error.code == 'user-not-found') {
+          /// Handle the case where the email is not registered
+          if (!mounted) return;
+          await MyAppMethods.showErrorORWarningDialog(
+              context: context,
+              subtitle: "This email is not registered. Please sign up.",
+              fct: () {});
+          // Fluttertoast.showToast(
+          //   msg: "This email is not registered. Please sign up.",
+          //   textColor: Colors.white,
+          // );
+          // if(!mounted) return;
+          // Navigator.pushReplacementNamed(context, RootScreen.routeName);
+        } else {
+          if (!mounted) return;
+          await MyAppMethods.showErrorORWarningDialog(
+              context: context, subtitle: error.toString(), fct: () {});
+        }
+      } catch (error) {
+        if (!mounted) return;
+        await MyAppMethods.showErrorORWarningDialog(
+            context: context, subtitle: error.toString(), fct: () {});
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
