@@ -13,44 +13,44 @@ class AppConstants {
 
   static List<CategoryModel> categoriesList = [
     CategoryModel(
-      id: "Phones",
-      image: AssetsManager.mobiles,
-      name: "Phones",
+      id: "Air Conditioners",
+      image: AssetsManager.aircondition,
+      name: "Air Conditioners",
     ),
     CategoryModel(
-      id: "Laptops",
-      image: AssetsManager.pc,
-      name: "Laptops",
+      id: "Home Decoration",
+      image: AssetsManager.homedecoration,
+      name: "Home Decoration",
     ),
     CategoryModel(
-      id: "Electronics",
-      image: AssetsManager.electronics,
-      name: "Electronics",
+      id: "Jewellery",
+      image: AssetsManager.jewelerry,
+      name: "Jewellery",
     ),
     CategoryModel(
-      id: "Watches",
-      image: AssetsManager.watch,
-      name: "Watches",
+      id: "Refrigerators",
+      image: AssetsManager.refrigerator,
+      name: "Refrigerators",
     ),
     CategoryModel(
-      id: "Clothes",
-      image: AssetsManager.fashion,
-      name: "Clothes",
+      id: "Snack Foods",
+      image: AssetsManager.snakefoods,
+      name: "Snack Foods",
     ),
     CategoryModel(
-      id: "Shoes",
-      image: AssetsManager.shoes,
-      name: "Shoes",
+      id: "Sunglasses",
+      image: AssetsManager.sunglasess,
+      name: "Sunglasses",
     ),
     CategoryModel(
-      id: "Books",
-      image: AssetsManager.book,
-      name: "Books",
+      id: "Televisions",
+      image: AssetsManager.televisions,
+      name: "Televisions",
     ),
-    CategoryModel(
-      id: "Cosmetics",
-      image: AssetsManager.cosmetics,
-      name: "Cosmetics",
-    ),
+    // CategoryModel(
+    //   id: "Cosmetics",
+    //   image: AssetsManager.cosmetics,
+    //   name: "Cosmetics",
+    // ),
   ];
 }
