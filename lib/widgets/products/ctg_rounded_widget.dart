@@ -21,8 +21,8 @@ class CategoryRoundedWidget extends StatelessWidget {
         children: [
           Image.asset(
             image,
-            height: 50,
-            width: 50,
+            height: 70,
+            width: 70,
           ),
           const SizedBox(
             height: 15,
