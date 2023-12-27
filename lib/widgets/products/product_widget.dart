@@ -45,13 +45,37 @@ class _ProductWidgetState extends State<ProductWidget> {
               },
               child: Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: FancyShimmerImage(
-                      imageUrl: getCurrProduct.productImage,
-                      height: size.height * 0.22,
-                      width: double.infinity,
-                    ),
+                  Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: FancyShimmerImage(
+                          imageUrl: getCurrProduct.productImage,
+                          height: size.height * 0.22,
+                          width: double.infinity,
+                        ),
+                      ),
+                      Positioned(
+                        top: 8.0,
+                        right: 8.0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Text(
+                            // Replace 'yourRatingVariable' with the actual variable that holds the rating value
+                            '(${getCurrProduct.productRatings})', // Example: '${getCurrProduct.productRating}'
+                            style:  const TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 12.0,
@@ -100,7 +124,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(12.0),
                               onTap: () async {
-                                if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
+                                if (cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
                                   return;
                                 }
                                 try {
@@ -111,23 +135,17 @@ class _ProductWidgetState extends State<ProductWidget> {
                                   );
                                 } catch (e) {
                                   await MyAppMethods.showErrorORWarningDialog(
-                                      context: context,
-                                      subtitle: e.toString(),
-                                      fct: () {});
+                                    context: context,
+                                    subtitle: e.toString(),
+                                    fct: () {},
+                                  );
                                 }
-
-                                // if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
-                                //   return;
-                                // }
-                                // cartProvider.addProductToCart(
-                                //     productId: getCurrProduct.productId);
                               },
                               splashColor: Colors.red,
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Icon(
-                                  cartProvider.isProdinCart(
-                                          productId: getCurrProduct.productId)
+                                  cartProvider.isProdinCart(productId: getCurrProduct.productId)
                                       ? Icons.check
                                       : Icons.add_shopping_cart_outlined,
                                   size: 20,
