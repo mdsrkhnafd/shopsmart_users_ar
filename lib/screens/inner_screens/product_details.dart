@@ -94,7 +94,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             children: [
                               HeartButtonWidget(
                                 color: Colors.blue.shade100,
-                                productId: getCurrProduct.productId,),
+                                productId: getCurrProduct.productId,
+                              ),
                               const SizedBox(
                                 width: 10,
                               ),
@@ -111,7 +112,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       ),
                                     ),
                                     onPressed: () async {
-                                      if(cartProvider.isProdinCart(productId: getCurrProduct.productId)) {
+                                      if (cartProvider.isProdinCart(
+                                          productId:
+                                              getCurrProduct.productId)) {
                                         return;
                                       }
                                       try {
@@ -121,10 +124,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           context: context,
                                         );
                                       } catch (e) {
-                                        await MyAppMethods.showErrorORWarningDialog(
-                                            context: context,
-                                            subtitle: e.toString(),
-                                            fct: () {});
+                                        await MyAppMethods
+                                            .showErrorORWarningDialog(
+                                                context: context,
+                                                subtitle: e.toString(),
+                                                fct: () {});
                                       }
                                     },
                                     icon: Icon(
@@ -163,6 +167,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                         SubtitleTextWidget(
                             label: getCurrProduct.productDescription),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                         Row(
+                          children: [
+                            const TitlesTextWidget(label: "Ratings"),
+                            const SizedBox(width: 10,),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amberAccent,
+                              size: 20,
+                            ),
+                            SubtitleTextWidget(label: "(${getCurrProduct.productRatings})")
+                          ],
+                        )
                       ],
                     ),
                   )
