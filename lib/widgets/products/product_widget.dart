@@ -65,14 +65,14 @@ class _ProductWidgetState extends State<ProductWidget> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Text(
-                            // Replace 'yourRatingVariable' with the actual variable that holds the rating value
-                            '(${getCurrProduct.productRatings})', // Example: '${getCurrProduct.productRating}'
-                            style:  const TextStyle(
+                            '(${getCurrProduct.productRatings ?? '4.3'})',
+                            style: const TextStyle(
                               color: Colors.yellow,
                               fontSize: 12.0,
-                              fontWeight: FontWeight.bold
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+
                         ),
                       ),
                     ],

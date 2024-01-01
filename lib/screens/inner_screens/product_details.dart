@@ -179,7 +179,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               color: Colors.amberAccent,
                               size: 20,
                             ),
-                            SubtitleTextWidget(label: "(${getCurrProduct.productRatings})")
+                            SubtitleTextWidget(label: "(${getCurrProduct.productRatings ?? '4.3'})")
                           ],
                         )
                       ],
