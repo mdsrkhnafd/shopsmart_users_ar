@@ -65,7 +65,8 @@ class MyApp extends StatelessWidget {
           create: (_) => OrderProvider(),
         ),
       ],
-      child: Consumer<ThemeProvider>(builder: (
+      child: Consumer<ThemeProvider>(
+          builder: (
           context,
           themeProvider,
           child,

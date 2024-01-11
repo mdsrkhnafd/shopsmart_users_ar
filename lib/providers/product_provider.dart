@@ -37,21 +37,15 @@ class ProductsProvider with ChangeNotifier {
 
   Future<List<ProductModel>> fetchProducts() async {
     try {
-      await productDb.orderBy('productRatings', descending: false).get().then(
-        (productSnapshot) {
-          products.clear();
-          //  products = [];
-          for (var element in productSnapshot.docs) {
-            products.insert(0, ProductModel.fromFirestore(element));
-          }
-        },
-      );
+      var productSnapshot = await productDb.orderBy('productRatings', descending: true).get();
+      products = productSnapshot.docs.map((element) => ProductModel.fromFirestore(element)).toList();
       notifyListeners();
       return products;
     } catch (e) {
       rethrow;
     }
   }
+
 
   Stream<List<ProductModel>> fetchProductsStream() {
     try {
